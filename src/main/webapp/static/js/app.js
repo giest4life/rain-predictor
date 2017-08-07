@@ -6,7 +6,7 @@
 
 	const CITIES_SEARCH_URI = BASE_URI + "api/cities";
 	const RAIN_PREDICTION_URI = BASE_URI + "api/predict";
-	const DEFAULT_INPUT_VALUE = "New York, New York";
+	const DEFAULT_INPUT_VALUE = "New York, New York, United States";
 	const DEFAULT_TYPEAHEAD_OBJECT = {
 		canonicalName : DEFAULT_INPUT_VALUE
 	};

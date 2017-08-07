@@ -1,0 +1,12 @@
+#Eclipse and project specific files
+.classpath
+.project
+.settings/
+
+#Build folder
+target/
+
+
+#Logs folder
+logs/
+app.log

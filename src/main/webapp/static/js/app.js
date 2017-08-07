@@ -10,8 +10,10 @@
 	const DEFAULT_TYPEAHEAD_OBJECT = {
 		canonicalName : DEFAULT_INPUT_VALUE
 	};
+	
+	const inputBar = $("#search");
 
-	$(".typeahead").typeahead({
+	inputBar.typeahead({
 		hint : true,
 		highlight : true,
 		minLength : 1,
@@ -34,15 +36,17 @@
 		}
 	}).typeahead("val", DEFAULT_INPUT_VALUE);
 
-	$(".typeahead").bind("typeahead:select", function(ev, suggestion) {
-
-		getRainPrediction(suggestion.canonicalName).then(showHourlyData);
-	}).trigger("typeahead:select", DEFAULT_TYPEAHEAD_OBJECT);
-
-	$(".typeahead").bind("typeahead:autocompleted", function(ev, suggestion) {
+	inputBar.bind("typeahead:select", function(ev, suggestion) {
 		getRainPrediction(suggestion.canonicalName).then(showHourlyData);
 		$(this).typeahead('close');
 	});
+
+	inputBar.bind("typeahead:autocompleted", function(ev, suggestion) {
+		getRainPrediction(suggestion.canonicalName).then(showHourlyData);
+		$(this).typeahead('close');
+	});
+	
+	inputBar.trigger("typeahead:autocompleted", DEFAULT_TYPEAHEAD_OBJECT);
 
 	function showHourlyData(data) {
 
@@ -81,12 +85,12 @@
 	function getRainPrediction(location) {
 
 		const loadingDiv = $(".loading");
-		loadingDiv.css("display", "");
+		loadingDiv.css("visibility", "visible");
 
 		return $.get(RAIN_PREDICTION_URI, {
 			city : location
 		}, function(data) {
-			loadingDiv.css("display", "none");
+			loadingDiv.css("visibility", "hidden");
 			
 			const summaryCells = $("#summaryTable tbody tr:first td");
 			summaryCells.eq(0).text(data.hourly.summary);

@@ -42,8 +42,8 @@ public class HelloController {
 	
 	@PostConstruct
 	public void sayHello() {
-		if(LOG.isDebugEnabled()) {
-			LOG.debug("Constructed hello controller");
+		if(LOG.isInfoEnabled()) {
+			LOG.info("Constructed hello controller");
 		}
 	}
 

@@ -35,7 +35,7 @@ public class GoogleCoordinateRetrieval implements CoordinateRetrieval {
 		GeocodingResult[] results;
 		Map<String, Double> resultMap = new HashMap<>();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Retrieving coordinates for {}, city");
+			LOG.debug("Retrieving coordinates for {}", city);
 		}
 		try {
 			results = GeocodingApi.geocode(geoCtxt, city).await();

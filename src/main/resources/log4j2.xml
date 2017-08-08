@@ -9,7 +9,7 @@
         </File>
     </Appenders>
 	<Loggers>
-		<Logger name="com.eqan" level="trace" additivity="false">
+		<Logger name="com.eqan" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" level="info"/>
 		</Logger>

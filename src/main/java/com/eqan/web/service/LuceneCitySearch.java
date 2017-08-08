@@ -40,7 +40,7 @@ public class LuceneCitySearch implements CitySearch {
 	public List<City> searchByCanonicalName(String search) {
 		List<City> cities = new ArrayList<>();
 		try {
-			Query q = qp.parse(search);
+			Query q = qp.parse(QueryParser.escape(search));
 			TopDocs docs = searcher.search(q, HITS_PER_PAGE);
 			ScoreDoc[] hits = docs.scoreDocs;
 

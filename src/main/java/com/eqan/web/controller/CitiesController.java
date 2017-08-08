@@ -23,8 +23,8 @@ public class CitiesController {
 
 	@GetMapping("/cities")
 	public List<City> getCities(@RequestParam String query) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Received request for /cities with query {}", query);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Received request for /cities with query {}", query);
 		}
 		if (query.trim().isEmpty()) {
 			throw new IllegalArgumentException("The query parameter must not be null or empty");

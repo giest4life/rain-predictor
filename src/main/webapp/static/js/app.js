@@ -37,12 +37,12 @@
 	}).typeahead("val", DEFAULT_INPUT_VALUE);
 
 	inputBar.bind("typeahead:select", function(ev, suggestion) {
-		getRainPrediction(suggestion.canonicalName).then(showHourlyData);
+		getRainPrediction(suggestion.canonicalName);
 		$(this).typeahead('close');
 	});
 
 	inputBar.bind("typeahead:autocompleted", function(ev, suggestion) {
-		getRainPrediction(suggestion.canonicalName).then(showHourlyData);
+		getRainPrediction(suggestion.canonicalName);
 		$(this).typeahead('close');
 	});
 	
@@ -85,19 +85,20 @@
 	function getRainPrediction(location) {
 
 		const loadingDiv = $(".loading");
-		loadingDiv.css("visibility", "visible");
+		loadingDiv.css("display", "block");
 
 		return $.get(RAIN_PREDICTION_URI, {
 			city : location
 		}, function(data) {
-			loadingDiv.css("visibility", "hidden");
-			
-			const summaryCells = $("#summaryTable tbody tr:first td");
-			summaryCells.eq(0).text(data.hourly.summary);
-			summaryCells.eq(1).text(data.currently.summary);
+			loadingDiv.css("display", "none");
+			removeResultsRows();
 
-		});
+		}).then(showHourlyData);
 
+	}
+	
+	function removeResultsRows() {
+		$("#probTable > tbody > tr").remove();
 	}
 
 })();

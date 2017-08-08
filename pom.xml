@@ -5,6 +5,10 @@
 	<artifactId>rain-predictor</artifactId>
 	<version>0.1.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	
+	<properties>
+		<resourcesDir>src/main/resources</resourcesDir>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -72,6 +76,24 @@
 		</dependency>
 
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -83,6 +105,61 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>properties-maven-plugin</artifactId>
+			    <version>1.0.0</version>
+			    <executions>
+			    	<execution>
+			    		<phase>initialize</phase>
+			    		<goals>
+			    			<goal>read-project-properties</goal>
+			    		</goals>
+			    		<configuration>
+			    			<files>
+			    				<file>${resourcesDir}/private/${env}.properties</file>
+			    			</files>
+			    		</configuration>
+			    	</execution>
+			    </executions>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<basedir>${project.build.directory}/classes</basedir>
+					<includes>
+						<include>app.properties</include>
+					</includes>
+					<replacements>
+						<replacement>
+							<token>@GOOGLE_API_KEY@</token>
+							<value>${GOOGLE_API_KEY}</value>
+						</replacement>
+						<replacement>
+							<token>@DARKSKY_API_KEY@</token>
+							<value>${DARKSKY_API_KEY}</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <version>3.1.0</version>
+			    <configuration>
+			    	<packagingExcludes>WEB-INF/classes/private/</packagingExcludes>
+			    </configuration>
 			</plugin>
 		</plugins>
 	</build>

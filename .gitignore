@@ -2,10 +2,14 @@
 .classpath
 .project
 .settings/
+.DS_Store
 
 #Build folder
 target/
 
+#Property files
+test-app.properties
+private/
 
 #Logs folder
 logs/

@@ -19,7 +19,7 @@ with open('MOCK_DATA.csv') as csvfile:
                 break
             print('Hashing password on row {:d}'.format(N))
             password = row['password']
-            hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(WORKRATE))
+            hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(WORKRATE, prefix=b'2a'))
             WRITER.writerow({'email': row['email'], 'password': hashed.decode()})
             N += 1
 

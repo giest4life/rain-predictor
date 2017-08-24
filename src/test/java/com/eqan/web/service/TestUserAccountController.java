@@ -3,6 +3,7 @@ package com.eqan.web.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Base64;
 
 import org.junit.Before;
@@ -41,13 +42,6 @@ public class TestUserAccountController {
     private static ObjectMapper MAPPER;
     private static SimpleModule MODULE;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private PostgreSQL dbUtils = new PostgreSQL();
-
-    private User testUser = new User("jill@test.com", "password");
-
     @BeforeClass
     public static void setUpBeforeClass() {
 
@@ -57,8 +51,26 @@ public class TestUserAccountController {
         MAPPER.registerModule(MODULE);
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    private PostgreSQL dbUtils = new PostgreSQL();
+
+    private User testUser = new User("jill@test.com", "password");
+
+    private ResponseEntity<User> sendJsonPostRequest(String jsonUser, String endpoint) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<String>(jsonUser, headers);
+
+        if (LOG.isDebugEnabled())
+            LOG.debug("Sending user {} to {}", jsonUser, URL);
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.exchange(URL, HttpMethod.POST, entity, User.class, endpoint);
+    }
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         dbUtils.setJdbcTemplate(jdbcTemplate);
         dbUtils.truncateUserTable();
         dbUtils.addUsers();
@@ -98,17 +110,6 @@ public class TestUserAccountController {
         ResponseEntity<User> response = restTemplate.exchange(URL, HttpMethod.GET, entity, User.class,
                 SIGN_IN_ENDPOINT);
         assertEquals("Response code must be 200", HttpStatus.OK, response.getStatusCode());
-    }
-
-    private ResponseEntity<User> sendJsonPostRequest(String jsonUser, String endpoint) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<String>(jsonUser, headers);
-
-        if (LOG.isDebugEnabled())
-            LOG.debug("Sending user {} to {}", jsonUser, URL);
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.exchange(URL, HttpMethod.POST, entity, User.class, endpoint);
     }
 
 }

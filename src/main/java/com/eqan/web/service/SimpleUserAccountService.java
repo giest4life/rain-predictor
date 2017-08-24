@@ -72,7 +72,10 @@ public class SimpleUserAccountService implements UserAccountService {
     }
 
     public User signIn(String email, String password) {
+        if(LOG.isDebugEnabled())
+            LOG.debug("Received signIn request for {}", email);
         User dbUser = getUserByEmail(email);
+
         if (!checkPassword(password, dbUser.getPassword())) {
             throw new NotAuthorizedException(String.format("User %s could not be authenticated", email));
         }

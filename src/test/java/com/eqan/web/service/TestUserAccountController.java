@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.eqan.utils.dao.PostgreSQL;
@@ -58,6 +59,18 @@ public class TestUserAccountController {
 
     private User testUser = new User("jill@test.com", "password");
 
+    private String getAuthorizationHeaderForUser(User user) {
+        String credentials = user.getEmail() + ":" + user.getPassword();
+        String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
+        return "Basic " + encodedCredentials;
+    }
+
+    private HttpEntity<String> getHttpEntityForAuthorization(String authorization) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authorization);
+        return new HttpEntity<String>(headers);
+    }
+
     private ResponseEntity<User> sendJsonPostRequest(String jsonUser, String endpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -67,6 +80,12 @@ public class TestUserAccountController {
             LOG.debug("Sending user {} to {}", jsonUser, URL);
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(URL, HttpMethod.POST, entity, User.class, endpoint);
+    }
+    
+    private ResponseEntity<User> getResponseToUserGetRequest(String URL, String endpoint, HttpEntity<String> entity) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.exchange(URL, HttpMethod.GET, entity, User.class,
+                SIGN_IN_ENDPOINT);
     }
 
     @Before
@@ -93,23 +112,32 @@ public class TestUserAccountController {
 
     }
 
+    @Test
     public void testSignInController() throws JsonProcessingException {
-        User testUser = dbUtils.getTestUsers().get(0);
-        String credentials = testUser.getEmail() + ":" + testUser.getPassword();
-        String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
-        String authorization = "Basic " + encodedCredentials;
+        User user = dbUtils.getTestUsers().get(0);
+        String authorization = getAuthorizationHeaderForUser(user);
 
         if (LOG.isDebugEnabled())
             LOG.debug("Testing {} with Authorization header value {}", SIGN_IN_ENDPOINT, authorization);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authorization);
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        HttpEntity<String> entity = getHttpEntityForAuthorization(authorization);
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<User> response = restTemplate.exchange(URL, HttpMethod.GET, entity, User.class,
-                SIGN_IN_ENDPOINT);
+        ResponseEntity<User> response = getResponseToUserGetRequest(URL, SIGN_IN_ENDPOINT, entity);
         assertEquals("Response code must be 200", HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testSignInControllerInvalid() throws JsonProcessingException {
+        User user = dbUtils.getTestUsers().get(10);
+        user.setPassword("Clearly wrong");
+        String authorization = getAuthorizationHeaderForUser(user);
+
+        HttpEntity<String> entity = getHttpEntityForAuthorization(authorization);
+        try {
+            getResponseToUserGetRequest(URL, SIGN_IN_ENDPOINT, entity);
+        } catch (HttpClientErrorException e) {
+            assertEquals("Response code must be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
     }
 
 }

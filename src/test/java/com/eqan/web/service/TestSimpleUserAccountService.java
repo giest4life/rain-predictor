@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eqan.utils.dao.PostgreSQL;
+import com.eqan.web.exceptions.NotAuthorizedException;
 import com.eqan.web.model.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -89,6 +90,15 @@ public class TestSimpleUserAccountService {
         User user = testUsers.get(0);
         User testedUser = userService.signIn(user.getEmail(), user.getPassword());
         assertEquals("Returned user must be the same", user.getEmail(), testedUser.getEmail());
+    }
+    
+    @Test(expected=NotAuthorizedException.class)
+    public void testSignInInvalidUser() {
+        if (LOG.isDebugEnabled())
+            LOG.debug("Testing invalid user trying to sign in");
+        User user = testUsers.get(0);
+        user.setPassword("This is wrong");
+        userService.signIn(user.getEmail(), user.getPassword());
     }
 
     @Test

@@ -1,18 +1,28 @@
 package com.eqan.web.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 public class User {
     private long id;
     private String email;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
-    
+
+    // No-arg constructor needed for Jackson
     public User() {
         
     }
-    
-    public User(long id, String email, String password) {
-        this.id = id;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public User(long id, String email, String password) {
+        this(email, password);
+        this.id = id;
+
     }
 
     public long getId() {
@@ -61,10 +71,9 @@ public class User {
         if (getClass() != obj.getClass())
             return false;
         User other = (User) obj;
-        if (id != other.id)
+        if (id != other.id || !email.equals(other.email))
             return false;
         return true;
     }
-    
-    
+
 }

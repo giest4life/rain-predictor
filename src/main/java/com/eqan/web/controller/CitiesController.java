@@ -16,28 +16,28 @@ import com.eqan.web.service.CitySearch;
 @RestController
 @RequestMapping("/api")
 public class CitiesController {
-	private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
 
-	@Autowired
-	private CitySearch citySearch;
+    @Autowired
+    private CitySearch citySearch;
 
-	@GetMapping("/cities")
-	public List<City> getCities(@RequestParam String query) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Received request for /cities with query {}", query);
-		}
-		if (query.trim().isEmpty()) {
-			throw new IllegalArgumentException("The query parameter must not be null or empty");
-		}
-		return citySearch.searchByCanonicalName(query);
-	}
+    @GetMapping("/cities")
+    public List<City> getCities(@RequestParam String query) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Received request for /cities with query {}", query);
+        }
+        if (query.trim().isEmpty()) {
+            throw new IllegalArgumentException("The query parameter must not be null or empty");
+        }
+        return citySearch.searchByCanonicalName(query);
+    }
 
-	@PostConstruct
-	public void sayHello() {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Constructed cities controller");
-		}
+    @PostConstruct
+    public void sayHello() {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Constructed cities controller");
+        }
 
-	}
+    }
 
 }

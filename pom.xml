@@ -190,6 +190,14 @@
 							<token>@JWT_KEY@</token>
 							<value>${JWT_KEY}</value>
 						</replacement>
+						<replacement>
+							<token>@POSTGRES_USERNAME@</token>
+							<value>${POSTGRES_USERNAME}</value>
+						</replacement>
+						<replacement>
+							<token>@POSTGRES_PASSWORD@</token>
+							<value>${POSTGRES_PASSWORD}</value>
+						</replacement>
 					</replacements>
 				</configuration>
 			</plugin>

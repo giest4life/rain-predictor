@@ -23,8 +23,8 @@
 		<property name="driverClassName" value="org.postgresql.Driver" />
 		<property name="url"
 			value="jdbc:postgresql://localhost:5432/eqan?currentSchema=rain_predictor" />
-		<property name="username" value="eqan" />
-		<property name="password" value="password" />
+		<property name="username" value="${POSTGRES_USERNAME}" />
+		<property name="password" value="${POSTGRES_PASSWORD}" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager"

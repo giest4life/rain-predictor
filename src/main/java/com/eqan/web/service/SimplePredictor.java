@@ -54,6 +54,7 @@ public class SimplePredictor implements Predictor {
 
 	@PostConstruct
 	public void postConstruct() {
-		LOG.info("SimplePredictor initialized");
+	    if(LOG.isTraceEnabled())
+	        LOG.trace("Constructed simple predictor");
 	}
 }

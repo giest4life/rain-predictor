@@ -40,6 +40,8 @@ public class PostgreSQL {
             testUsers.add(new User(csvRecord.get("email"), csvRecord.get("password")));
             n++;
         }
+        
+        reader.close();
 
     }
 
@@ -51,6 +53,8 @@ public class PostgreSQL {
         for (CSVRecord csvRecord : records) {
             users.add(new User(csvRecord.get("email"), csvRecord.get("password")));
         }
+        
+        reader.close();
 
         List<Object[]> pairs = new ArrayList<>();
 
@@ -58,8 +62,8 @@ public class PostgreSQL {
             pairs.add(new Object[] { user.getEmail(), user.getPassword() });
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Batch adding test users into user table");
+        if (LOG.isTraceEnabled())
+            LOG.trace("Batch adding test users into user table");
         jdbcTemplate.batchUpdate("INSERT INTO app_user(email, password) VALUES(?,?)", pairs);
     }
 
@@ -72,8 +76,8 @@ public class PostgreSQL {
     }
 
     public void truncateUserTable() {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Dropping all rows...");
+        if (LOG.isTraceEnabled())
+            LOG.trace("Dropping all rows...");
         String truncateStatement = "TRUNCATE %s";
         String userTable = "app_user";
         String sql = String.format(truncateStatement, userTable);

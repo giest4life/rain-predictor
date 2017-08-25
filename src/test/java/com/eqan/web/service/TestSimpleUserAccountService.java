@@ -102,7 +102,7 @@ public class TestSimpleUserAccountService {
     }
 
     @Test
-    public void updateUserTest() {
+    public void testUpdateUser() {
         User user = userService.createUser(testUser);
         user.setEmail("gretel@test.com");
         userService.updateUser(user);

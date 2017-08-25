@@ -17,45 +17,43 @@ import com.google.maps.model.GeocodingResult;
 
 @Service("googleCoordinateRetrieval")
 public class GoogleCoordinateRetrieval implements CoordinateRetrieval {
-	private static final Logger LOG = LoggerFactory.getLogger(GoogleCoordinateRetrieval.class);
-	
-	private GeoApiContext geoCtxt;
-	
-	@Autowired
-	public GoogleCoordinateRetrieval(@Value("${GOOGLE_API_KEY}") String API_KEY) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("API_KEY is {}", API_KEY);
-		}
-		geoCtxt = new GeoApiContext.Builder().apiKey(API_KEY).build();
-	}
-	
+    private static final Logger LOG = LoggerFactory.getLogger(GoogleCoordinateRetrieval.class);
 
-	@Override
-	public Map<String, Double> getCoordinatesByCity(String city) {
-		GeocodingResult[] results;
-		Map<String, Double> resultMap = new HashMap<>();
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Retrieving coordinates for {}", city);
-		}
-		try {
-			results = GeocodingApi.geocode(geoCtxt, city).await();
+    private GeoApiContext geoCtxt;
 
-			resultMap.put("lat", results[0].geometry.location.lat);
-			resultMap.put("lng", results[0].geometry.location.lng);
+    @Autowired
+    public GoogleCoordinateRetrieval(@Value("${GOOGLE_API_KEY}") String API_KEY) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("API_KEY is {}", API_KEY);
+        }
+        geoCtxt = new GeoApiContext.Builder().apiKey(API_KEY).build();
+    }
 
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Finished retrieving coordinates");
-				LOG.debug("Returning coordinates for {}", results[0].formattedAddress);
-				LOG.debug("Lat: {}, Lng: {}", resultMap.get("lat"), resultMap.get("lng"));
-			}
+    @Override
+    public Map<String, Double> getCoordinatesByCity(String city) {
+        GeocodingResult[] results;
+        Map<String, Double> resultMap = new HashMap<>();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Retrieving coordinates for {}", city);
+        }
+        try {
+            results = GeocodingApi.geocode(geoCtxt, city).await();
 
-		} catch (ApiException | InterruptedException | IOException e) {
-			LOG.error("Exception occurred while retrieving coordinates", e);
-			throw new RuntimeException(e);
-		}
+            resultMap.put("lat", results[0].geometry.location.lat);
+            resultMap.put("lng", results[0].geometry.location.lng);
 
-		return resultMap;
-	}
-	
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Finished retrieving coordinates");
+                LOG.trace("Returning coordinates for {}", results[0].formattedAddress);
+                LOG.trace("Lat: {}, Lng: {}", resultMap.get("lat"), resultMap.get("lng"));
+            }
+
+        } catch (ApiException | InterruptedException | IOException e) {
+            LOG.error("Exception occurred while retrieving coordinates", e);
+            throw new RuntimeException(e);
+        }
+
+        return resultMap;
+    }
 
 }

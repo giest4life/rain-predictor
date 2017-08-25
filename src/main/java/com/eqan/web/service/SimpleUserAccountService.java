@@ -1,8 +1,10 @@
 package com.eqan.web.service;
 
+import static com.eqan.web.security.BcryptPasswordHashing.checkPassword;
+import static com.eqan.web.security.BcryptPasswordHashing.hashPassword;
+
 import java.util.List;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,26 +13,9 @@ import org.springframework.stereotype.Service;
 import com.eqan.web.exceptions.NotAuthorizedException;
 import com.eqan.web.model.User;
 import com.eqan.web.repository.UserRepository;
-
 @Service("simpleUser")
 public class SimpleUserAccountService implements UserAccountService {
-    private static Logger LOG = LoggerFactory.getLogger(UserAccountService.class);
-    private static int WORKLOAD = 12;
-
-    private static boolean checkPassword(String plaintextPassword, String hashedPassword) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Checking hashed password");
-        }
-        return BCrypt.checkpw(plaintextPassword, hashedPassword);
-    }
-    
-    private static String hashPassword(String plaintextPassword) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Hashing password with workload {}", WORKLOAD);
-        }
-        String salt = BCrypt.gensalt(WORKLOAD);
-        return BCrypt.hashpw(plaintextPassword, salt);
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(UserAccountService.class);
     
     @Autowired
     UserRepository userRepository;

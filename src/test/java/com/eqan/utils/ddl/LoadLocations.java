@@ -23,7 +23,7 @@ import com.eqan.web.model.Location;
 public class LoadLocations {
     public static final Logger LOG = LoggerFactory.getLogger(LoadLocations.class);
     public static final String LOCATION_DATA_FILE = "/Users/eqan/Downloads/cities1000.txt";
-    public static final String[] HEADERS = { "geonameid", "location_name", "asciiname", "alternatenames", "latitude",
+    public static final String[] HEADERS = { "geonameid", "name", "location_name", "alternatenames", "latitude",
             "longitude", "feature_class", "feature_code", "country_code", "cc2", "admin1_code", "admin2_code",
             "admin3_code", "admin4_code", "population", "elevation", "dem", "timezone", "modification_date" };
     public static final String COUNTRY_CODE_MAPPINGS_FILE = "/Users/eqan/Downloads/country_code_mappings.csv";
@@ -33,7 +33,7 @@ public class LoadLocations {
     
     static Object[] csvRecordToBatchRecord(CSVRecord r) {
 
-        return new Object[] { Long.parseLong(r.get(HEADERS[0])), r.get(HEADERS[1]),
+        return new Object[] { Long.parseLong(r.get(HEADERS[0])), r.get(HEADERS[2]),
                 Double.parseDouble(r.get(HEADERS[4])), Double.parseDouble(r.get(HEADERS[5])), r.get(HEADERS[8]), COUNTRY_CODE_MAPPING.get(r.get(HEADERS[8])),
                 r.get(HEADERS[10]), r.get(HEADERS[11]) };
     }
@@ -41,7 +41,7 @@ public class LoadLocations {
     static Location csvRecordToLocation(CSVRecord r) {
         Location location = new Location();
         location.setGeonameId(Long.parseLong(r.get(HEADERS[0])));
-        location.setLocationName(r.get(HEADERS[1]));
+        location.setLocationName(r.get(HEADERS[2]));
         location.setLatitude(Double.parseDouble(r.get(HEADERS[4])));
         location.setLongitude(Double.parseDouble(r.get(HEADERS[5])));
         location.setCountryCode(r.get(HEADERS[8]));

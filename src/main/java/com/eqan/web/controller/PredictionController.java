@@ -12,7 +12,7 @@ import com.eqan.web.service.Predictor;
 
 @RestController
 public class PredictionController {
-	private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PredictionController.class);
 	@Autowired
 	Predictor predictor;
 	
@@ -21,8 +21,8 @@ public class PredictionController {
 		if (city.trim().isEmpty()) {
 			throw new IllegalArgumentException("The city parameter must not be null or empty");
 		}
-		if(LOG.isDebugEnabled()) {
-			LOG.debug("Received request for /predict for city " + city);
+		if(LOG.isTraceEnabled()) {
+			LOG.trace("Received request for /predict for city " + city);
 		}
 		return predictor.predict(city);
 	}

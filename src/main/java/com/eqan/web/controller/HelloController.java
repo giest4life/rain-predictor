@@ -1,50 +1,32 @@
 package com.eqan.web.controller;
 
+import java.util.Locale;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class HelloController {
-	private static final Logger LOG = LoggerFactory.getLogger(HelloController.class); 
-	/*
-	private static final String template = "Hello, %s!";
-	private final AtomicLong counter = new AtomicLong();
-	*/
+    private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
 
-	/*
-	@RequestMapping("/hello")
-	public Hello hello(@RequestParam("name") String name) {
-		Hello hello = new Hello(counter.incrementAndGet(), String.format(template, name));
-		return hello;
-	}
-	*/
-	@RequestMapping("/hello")
-	public ModelAndView hello(Model model) {
-		LOG.info("Received request for hello controller");
-		model.addAttribute("greeting", "noob");
-		return new ModelAndView("hello", "message", "Hello, World!");
-	}
-	
-	/*
-	@RequestMapping("*")
-	@ResponseBody
-	public String noob(HttpServletRequest request) {
-		System.out.println(request.getRequestURI());
-		return "hello world";
-	}
-	*/
-	
-	@PostConstruct
-	public void sayHello() {
-		if(LOG.isInfoEnabled()) {
-			LOG.info("Constructed hello controller");
-		}
-	}
+    @RequestMapping("/hello")
+    public String hello(Locale locale) {
+        LOG.info("Received request for hello controller");
+        locale.getVariant();
+
+        return String.format("Country code: %s, Country name %s, Language: %s", locale.getCountry(),
+                locale.getDisplayCountry(), locale.getDisplayLanguage());
+    }
+
+    @PostConstruct
+    public void sayHello() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Constructed hello controller");
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.eqan.web.exceptions.NotAuthorizedException;
@@ -59,7 +60,15 @@ public class SimpleUserAccountService implements UserAccountService {
     public User signIn(String email, String password) {
         if(LOG.isDebugEnabled())
             LOG.debug("Received signIn request for {}", email);
-        User dbUser = getUserByEmail(email);
+        User dbUser = null;
+        try {
+            dbUser = getUserByEmail(email); 
+        } catch (EmptyResultDataAccessException e) {
+            if (LOG.isTraceEnabled())
+                LOG.trace(e.getMessage());
+            throw new NotAuthorizedException(String.format("User %s could not be authenticated", email));
+        }
+        
 
         if (!checkPassword(password, dbUser.getPassword())) {
             throw new NotAuthorizedException(String.format("User %s could not be authenticated", email));

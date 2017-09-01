@@ -9,9 +9,8 @@
 target/
 
 #Property files
-test-app.properties
-dev-app.properties
 private/
+src/test/resources/app.properties
 
 #Logs folder
 logs/

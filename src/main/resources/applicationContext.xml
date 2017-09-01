@@ -13,11 +13,8 @@
 		<context:exclude-filter type="regex"
 			expression="com\.eqan\.web\.controller\..*" />
 	</context:component-scan>
-	<context:property-placeholder location="classpath:dev-app.properties"
-		order="1" ignore-unresolvable="true" />
-	<context:property-placeholder location="classpath:app.properties"
-		order="2" />
-
+	
+	<context:property-placeholder location="classpath:app.properties" />
 
 	<!-- JDBC Setup -->
 	<bean id="dataSource"

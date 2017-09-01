@@ -9,6 +9,7 @@
 	<properties>
 		<resourcesDir>src/main/resources</resourcesDir>
 		<spring.version>4.3.10.RELEASE</spring.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -132,6 +133,16 @@
 	</profiles>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>${resourcesDir}</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<filters>
+			<filter>${project.basedir}/config/${env}.properties</filter>
+			<filter>${project.basedir}/config/private/${env}.properties</filter>
+		</filters>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -143,71 +154,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-			    <groupId>org.codehaus.mojo</groupId>
-			    <artifactId>properties-maven-plugin</artifactId>
-			    <version>1.0.0</version>
-			    <executions>
-			    	<execution>
-			    		<phase>initialize</phase>
-			    		<goals>
-			    			<goal>read-project-properties</goal>
-			    		</goals>
-			    		<configuration>
-			    			<files>
-			    				<file>${resourcesDir}/private/${env}.properties</file>
-			    			</files>
-			    		</configuration>
-			    	</execution>
-			    </executions>
-			</plugin>
-			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>replacer</artifactId>
-				<version>1.5.3</version>
-				<executions>
-					<execution>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<basedir>${project.build.directory}/classes</basedir>
-					<includes>
-						<include>app.properties</include>
-					</includes>
-					<replacements>
-						<replacement>
-							<token>@GOOGLE_API_KEY@</token>
-							<value>${GOOGLE_API_KEY}</value>
-						</replacement>
-						<replacement>
-							<token>@DARKSKY_API_KEY@</token>
-							<value>${DARKSKY_API_KEY}</value>
-						</replacement>
-						<replacement>
-							<token>@JWT_KEY@</token>
-							<value>${JWT_KEY}</value>
-						</replacement>
-						<replacement>
-							<token>@POSTGRES_USERNAME@</token>
-							<value>${POSTGRES_USERNAME}</value>
-						</replacement>
-						<replacement>
-							<token>@POSTGRES_PASSWORD@</token>
-							<value>${POSTGRES_PASSWORD}</value>
-						</replacement>
-					</replacements>
-				</configuration>
-			</plugin>
-			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-war-plugin</artifactId>
 			    <version>3.1.0</version>
-			    <configuration>
-			    	<packagingExcludes>WEB-INF/classes/private/</packagingExcludes>
-			    </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -139,6 +139,18 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>${resourcesDir}</directory>
+				<includes>
+					<include>app.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
 		<filters>
 			<filter>${project.basedir}/config/${env}.properties</filter>
 			<filter>${project.basedir}/config/private/${env}.properties</filter>

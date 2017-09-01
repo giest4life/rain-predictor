@@ -7,8 +7,9 @@ public class Location {
     private double longitude;
     private double latitude;
     private String countryCode;
-    private String countryname;
+    private String countryName;
     private String admin1Code;
+    private String admin1Name;
     private String admin2Code;
     
     
@@ -42,11 +43,11 @@ public class Location {
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
-    public String getCountryname() {
-        return countryname;
+    public String getCountryName() {
+        return countryName;
     }
-    public void setCountryname(String countryname) {
-        this.countryname = countryname;
+    public void setCountryName(String countryname) {
+        this.countryName = countryname;
     }
     public String getAdmin1Code() {
         return admin1Code;
@@ -59,6 +60,12 @@ public class Location {
     }
     public void setAdmin2Code(String admin2Code) {
         this.admin2Code = admin2Code;
+    }
+    public String getAdmin1Name() {
+        return admin1Name;
+    }
+    public void setAdmin1Name(String admin1Name) {
+        this.admin1Name = admin1Name;
     }
     
     

@@ -13,6 +13,10 @@
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File"/>
 		</Logger>
+<!-- 		<Logger name="com.eqan.web.service.LuceneIndexLocationSearch" level="trace" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="File" level="info" />
+		</Logger> -->
 		<Root level="WARN">
 			<AppenderRef ref="Console" />
 		</Root>

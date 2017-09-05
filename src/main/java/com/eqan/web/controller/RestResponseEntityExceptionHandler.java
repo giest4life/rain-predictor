@@ -88,6 +88,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         if (LOG.isDebugEnabled()) {
             LOG.debug(LOG_EXCEPTION_TEMPLATE, ex.getClass().getSimpleName(), ex.getMessage());
         }
+        if (LOG.isTraceEnabled())
+            ex.printStackTrace();
     }
 
     private Map<String, String> getErrorMap(String error) {

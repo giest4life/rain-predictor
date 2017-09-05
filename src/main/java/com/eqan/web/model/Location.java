@@ -10,7 +10,6 @@ public class Location {
     private String countryName;
     private String admin1Code;
     private String admin1Name;
-    private String admin2Code;
     
     
     public long getGeonameId() {
@@ -54,12 +53,6 @@ public class Location {
     }
     public void setAdmin1Code(String admin1Code) {
         this.admin1Code = admin1Code;
-    }
-    public String getAdmin2Code() {
-        return admin2Code;
-    }
-    public void setAdmin2Code(String admin2Code) {
-        this.admin2Code = admin2Code;
     }
     public String getAdmin1Name() {
         return admin1Name;

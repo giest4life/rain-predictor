@@ -19,7 +19,6 @@ public class LocationRowMapper implements RowMapper<Location>{
         location.setCountryCode(rs.getString(5));
         location.setCountryName(rs.getString(6));
         location.setAdmin1Code(rs.getString(7));
-        location.setAdmin2Code(rs.getString(8));
         location.setAdmin1Name(rs.getString(9));
         return location;
     }

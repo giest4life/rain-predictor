@@ -54,7 +54,6 @@ public class LoadLocations {
         location.setCountryName(COUNTRY_CODE_MAPPING.get(location.getCountryCode()));
         location.setAdmin1Code(r.get(LOCATION_FILE_HEADERS[10]));
         location.setAdmin1Name(ADMIN1_CODE_MAPPING.get(location.getCountryCode() + "." + location.getAdmin1Code()));
-        location.setAdmin2Code(r.get(LOCATION_FILE_HEADERS[11]));
         return location;
     }
 

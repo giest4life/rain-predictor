@@ -56,6 +56,13 @@ public class LuceneIndexLocationSearch implements LocationSearch {
                 Query wordQuery = createWordQuery(queryString);
                 docs = searcher.search(wordQuery, MAX_HITS);
             }
+            
+            if (docs.scoreDocs.length == 0) {
+                if (LOG.isDebugEnabled())
+                    LOG.trace("Trying wildcard query");
+                Query wildCardQuery = createWildCardQuery(queryString);
+                docs = searcher.search(wildCardQuery, MAX_HITS);
+            }
             ScoreDoc[] hits = docs.scoreDocs;
             for (ScoreDoc scoreDoc : hits) {
                 Document doc = searcher.doc(scoreDoc.doc);
@@ -79,6 +86,10 @@ public class LuceneIndexLocationSearch implements LocationSearch {
     }
     private Query createWordQuery(String queryString) throws ParseException {
         return new QueryParser("long_name", analyzer).parse(queryString);
+    }
+    
+    private Query createWildCardQuery(String queryString) throws ParseException {
+        return new QueryParser("long_name", analyzer).parse(queryString + "*");
     }
 
 }

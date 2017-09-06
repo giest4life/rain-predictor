@@ -18,6 +18,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -28,6 +29,19 @@ import com.eqan.web.exceptions.NotAuthorizedException;
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
     private static Logger LOG = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
     private static String LOG_EXCEPTION_TEMPLATE = "{} occurreed: {}";
+
+    private Map<String, String> getErrorMap(String error) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", error);
+        return errorMap;
+    }
+
+    @ExceptionHandler(value = { HttpClientErrorException.class })
+    protected ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException ex, WebRequest request) {
+        logException(ex);
+        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), new HttpHeaders(),
+                HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
 
     @ExceptionHandler(value = { IllegalArgumentException.class, NullPointerException.class })
     protected ResponseEntity<Object> handleBadParams(RuntimeException ex, WebRequest request) {
@@ -45,12 +59,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 request);
     }
 
-    @ExceptionHandler(value = { NotAuthorizedException.class })
-    protected ResponseEntity<Object> handleNotAuthorized(NotAuthorizedException ex, WebRequest request) {
-        logException(ex);
-        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED,
-                request);
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), headers, status, request);
     }
 
     @Override
@@ -61,17 +74,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), headers, status, request);
-    }
-
-    @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
         logException(ex);
         return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), headers, status, request);
+    }
+
+    @ExceptionHandler(value = { NotAuthorizedException.class })
+    protected ResponseEntity<Object> handleNotAuthorized(NotAuthorizedException ex, WebRequest request) {
+        logException(ex);
+        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED,
+                request);
+
     }
 
     @Override
@@ -90,12 +104,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
         if (LOG.isTraceEnabled())
             ex.printStackTrace();
-    }
-
-    private Map<String, String> getErrorMap(String error) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("error", error);
-        return errorMap;
     }
 
     @PostConstruct

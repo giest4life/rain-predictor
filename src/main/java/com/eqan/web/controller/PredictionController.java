@@ -12,18 +12,14 @@ import com.eqan.web.service.Predictor;
 
 @RestController
 public class PredictionController {
-	private static final Logger LOG = LoggerFactory.getLogger(PredictionController.class);
-	@Autowired
-	Predictor predictor;
-	
-	@GetMapping("/predict")
-	public PredictionResult getPrediction(@RequestParam String city) {
-		if (city.trim().isEmpty()) {
-			throw new IllegalArgumentException("The city parameter must not be null or empty");
-		}
-		if(LOG.isTraceEnabled()) {
-			LOG.trace("Received request for /predict for city " + city);
-		}
-		return predictor.predict(city);
-	}
+    private static final Logger LOG = LoggerFactory.getLogger(PredictionController.class);
+    @Autowired
+    Predictor predictor;
+
+    @GetMapping("/predict")
+    public PredictionResult getPrediction(@RequestParam double longitude, @RequestParam double latitude) {
+        if (LOG.isTraceEnabled())
+            LOG.trace("Getting weather prediction for longitude {} and latitude {}", longitude, latitude);
+        return predictor.predict(longitude, latitude);
+    }
 }

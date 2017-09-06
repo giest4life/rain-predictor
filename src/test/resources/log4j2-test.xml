@@ -13,7 +13,7 @@
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File"/>
 		</Logger>
-<!-- 		<Logger name="com.eqan.web.service.LuceneIndexLocationSearch" level="trace" additivity="false">
+<!-- 		<Logger name="com.eqan.web" level="trace" additivity="false">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" level="info" />
 		</Logger> -->

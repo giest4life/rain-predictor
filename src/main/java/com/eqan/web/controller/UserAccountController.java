@@ -25,7 +25,7 @@ public class UserAccountController {
     @Autowired
     UserAccountService userAccountService;
 
-    @PostMapping("/register")
+//    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
         if (LOG.isDebugEnabled())
@@ -33,7 +33,7 @@ public class UserAccountController {
         return userAccountService.createUser(user);
     }
 
-    @GetMapping("/signin")
+//    @GetMapping("/signin")
     public User signIn(@RequestHeader("Authorization") String authorization) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Received request for /signin with header {}", authorization);
@@ -55,13 +55,5 @@ public class UserAccountController {
         }
 
         return userAccountService.signIn(credentials[0], credentials[1]);
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Constructed UserAccountController");
-        }
-
     }
 }

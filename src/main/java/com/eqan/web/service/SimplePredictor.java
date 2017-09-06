@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,6 @@ public class SimplePredictor implements Predictor {
     private static String BASE_URL = "https://api.darksky.net/forecast/{API_KEY}/{lat},{lng}?exclude={EXCLUDE_DATAPOINTS}";
     private static String EXCLUDE_DATAPOINTS = "minutely,daily,alerts,flags";
     private static final Logger LOG = LoggerFactory.getLogger(SimplePredictor.class);
-
-    @Autowired
-    private CoordinateRetrieval coordinateService;
 
     @Value("${DARKSKY_API_KEY}")
     private String API_KEY;
@@ -43,8 +39,6 @@ public class SimplePredictor implements Predictor {
 
     @Override
     public PredictionResult predict(String city) {
-        Map<String, Double> coordinates = coordinateService.getCoordinatesByCity(city);
-        return predict(coordinates.get("lng"), coordinates.get("lat"));
-
+        throw new UnsupportedOperationException();
     }
 }

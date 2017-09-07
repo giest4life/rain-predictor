@@ -2,8 +2,6 @@ package com.eqan.web.controller;
 
 import java.util.Base64;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class UserAccountController {
     @Autowired
     UserAccountService userAccountService;
 
-//    @PostMapping("/register")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
         if (LOG.isDebugEnabled())
@@ -33,7 +31,7 @@ public class UserAccountController {
         return userAccountService.createUser(user);
     }
 
-//    @GetMapping("/signin")
+    @GetMapping("/signin")
     public User signIn(@RequestHeader("Authorization") String authorization) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Received request for /signin with header {}", authorization);

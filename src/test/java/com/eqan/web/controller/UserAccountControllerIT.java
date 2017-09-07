@@ -33,12 +33,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
-public class TestUserAccountController {
+public class UserAccountControllerIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestUserAccountController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserAccountControllerIT.class);
     private static String URL = "http://localhost:8080/rain-predictor/api/{endpoint}";
-    private static final String REGISTER_ENDPOINT = "/register";
-    private static final String SIGN_IN_ENDPOINT = "/signin";
+    private static final String REGISTER_ENDPOINT = "register";
+    private static final String SIGN_IN_ENDPOINT = "signin";
     private static ObjectMapper MAPPER;
     private static SimpleModule MODULE;
 

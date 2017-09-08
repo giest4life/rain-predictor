@@ -59,7 +59,7 @@ public class LoadLocations {
 
     static void dropTable(JdbcTemplate jdbcTemplate) {
         LOG.info("Truncating table");
-        String sql = "TRUNCATE geoname_location";
+        String sql = "TRUNCATE geoname_location CASCADE";
         jdbcTemplate.execute(sql);
         LOG.info("Dropped all records");
     }

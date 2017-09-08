@@ -18,7 +18,7 @@ import com.eqan.web.model.Location;
 @ContextConfiguration("classpath:applicationContext.xml")
 public class LocationControllerIT {
     private static final Logger LOG = LoggerFactory.getLogger(LocationControllerIT.class);
-    private static String URL = "http://localhost:8080/rain-predictor/api/locations";
+    private static String URL = "http://localhost:8080/rain-predictor/locations";
     
     RestTemplate restTemplate = new RestTemplate();
     @Test

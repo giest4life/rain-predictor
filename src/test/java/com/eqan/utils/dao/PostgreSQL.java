@@ -78,7 +78,7 @@ public class PostgreSQL {
     public void truncateUserTable() {
         if (LOG.isTraceEnabled())
             LOG.trace("Dropping all rows...");
-        String truncateStatement = "TRUNCATE %s";
+        String truncateStatement = "TRUNCATE %s CASCADE";
         String userTable = "app_user";
         String sql = String.format(truncateStatement, userTable);
         jdbcTemplate.execute(sql);

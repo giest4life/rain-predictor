@@ -3,13 +3,11 @@ package com.eqan.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,12 +102,5 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
         if (LOG.isTraceEnabled())
             ex.printStackTrace();
-    }
-
-    @PostConstruct
-    private void postConstruct() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("{} constructed", this.getClass().getSimpleName());
-        }
     }
 }

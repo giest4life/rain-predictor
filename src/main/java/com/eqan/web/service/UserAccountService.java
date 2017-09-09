@@ -13,6 +13,7 @@ public interface UserAccountService {
     public void deleteUser(String email);
     public void deleteUser(long id);
     
+    public boolean validate(String email, String password);
     public User signIn(String email, String password);
     
 }

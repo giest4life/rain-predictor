@@ -30,8 +30,8 @@ public class LuceneIndexLocationSearch implements LocationSearch {
     public static final Logger LOG = LoggerFactory.getLogger(LuceneIndexLocationSearch.class);
     public static final int MAX_HITS = 10;
 
-    StandardAnalyzer analyzer = new StandardAnalyzer();
-    IndexReader reader;
+    private StandardAnalyzer analyzer = new StandardAnalyzer();
+    private IndexReader reader;
 
     @Autowired
     public LuceneIndexLocationSearch(@Value("${LOCATION_INDEX_PATH}") String locationIndexPath) throws IOException {

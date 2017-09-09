@@ -18,8 +18,12 @@ import com.eqan.web.repository.UserRepository;
 public class SimpleUserAccountService implements UserAccountService {
     private static final Logger LOG = LoggerFactory.getLogger(UserAccountService.class);
     
+    private UserRepository userRepository;
+    
     @Autowired
-    UserRepository userRepository;
+    public SimpleUserAccountService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User createUser(User user) {
@@ -57,6 +61,7 @@ public class SimpleUserAccountService implements UserAccountService {
         return userRepository.getUsers();
     }
 
+    @Override
     public User signIn(String email, String password) {
         if(LOG.isDebugEnabled())
             LOG.debug("Received signIn request for {}", email);
@@ -79,6 +84,20 @@ public class SimpleUserAccountService implements UserAccountService {
     @Override
     public User updateUser(User user) {
         return userRepository.updateUser(user);
+    }
+
+    @Override
+    public boolean validate(String email, String password) {
+        if (LOG.isTraceEnabled())
+            LOG.trace("Validating user with email {} and password", email);
+        try {
+            User dbUser = getUserByEmail(email);
+            return checkPassword(password, dbUser.getPassword());
+        } catch (EmptyResultDataAccessException e) {
+            if (LOG.isTraceEnabled())
+                LOG.trace(e.getMessage());
+        }
+        return false;
     }
 
 }

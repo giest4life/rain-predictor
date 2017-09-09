@@ -12,7 +12,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Component
+@Component("jwtAuthenticator")
 public class JwtAuthenticator {
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticator.class);
     public static final long HOUR = 3600L * 1000L;
@@ -27,20 +27,20 @@ public class JwtAuthenticator {
         this.parser = Jwts.parser().setSigningKey(key);
     }
 
-    public String getToken(String email) {
+    public boolean authenticateToken(String token, String email) {
+        return parser.parseClaimsJws(token).getBody().getSubject().equals(email);
+    }
+
+    public String generateToken(String email) {
         if (LOG.isTraceEnabled())
             LOG.trace("Getting a JWT for {} with expiration in {} hour", email, EXPIRE_HOUR);
         Date expiration = new Date();
         expiration.setTime(expiration.getTime() * EXPIRE_HOUR * HOUR);
-        return getToken(email, expiration);
+        return generateToken(email, expiration);
     }
 
-    public String getToken(String email, Date expiration) {
+    public String generateToken(String email, Date expiration) {
         return Jwts.builder().setExpiration(expiration).setSubject(email).signWith(SignatureAlgorithm.HS512, key)
                 .compact();
-    }
-
-    public boolean authenticateToken(String token, String email) {
-        return parser.parseClaimsJws(token).getBody().getSubject().equals(email);
     }
 }

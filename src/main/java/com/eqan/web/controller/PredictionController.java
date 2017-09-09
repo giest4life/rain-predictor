@@ -13,8 +13,13 @@ import com.eqan.web.service.Predictor;
 @RestController
 public class PredictionController {
     private static final Logger LOG = LoggerFactory.getLogger(PredictionController.class);
+    
+    private Predictor predictor;
+
     @Autowired
-    Predictor predictor;
+    public PredictionController(Predictor predictor) {
+        this.predictor = predictor;
+    }
 
     @GetMapping("/predict")
     public PredictionResult getPrediction(@RequestParam double longitude, @RequestParam double latitude) {

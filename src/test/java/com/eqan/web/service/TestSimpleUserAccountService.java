@@ -1,7 +1,6 @@
 package com.eqan.web.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -91,8 +90,8 @@ public class TestSimpleUserAccountService {
         User testedUser = userService.signIn(user.getEmail(), user.getPassword());
         assertEquals("Returned user must be the same", user.getEmail(), testedUser.getEmail());
     }
-    
-    @Test(expected=NotAuthorizedException.class)
+
+    @Test(expected = NotAuthorizedException.class)
     public void testSignInInvalidUser() {
         if (LOG.isDebugEnabled())
             LOG.debug("Testing invalid user trying to sign in");
@@ -111,4 +110,15 @@ public class TestSimpleUserAccountService {
 
     }
 
+    @Test
+    public void testValidateTrue() {
+        User user = testUsers.get(0);
+        assertTrue("User email and password are valid", userService.validate(user.getEmail(), user.getPassword()));
+    }
+    
+    @Test
+    public void testValidateFalse() {
+        User user = testUsers.get(0);
+        assertFalse("User email and password are invalid", userService.validate(user.getEmail(), "clearling-wrong"));
+    }
 }

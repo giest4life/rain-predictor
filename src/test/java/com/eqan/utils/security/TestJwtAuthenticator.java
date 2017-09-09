@@ -27,14 +27,14 @@ public class TestJwtAuthenticator {
     
     @Test
     public void testGetToken() {
-        String token = authenticator.getToken(TEST_EMAIL);
+        String token = authenticator.generateToken(TEST_EMAIL);
         assertEquals("The token has 3 parts", 3, token.split("\\.").length);
     }
     
     @Test
     public void testAuthenticateToken() {
-        String correctToken = authenticator.getToken(TEST_EMAIL);
-        String incorrectToken = authenticator.getToken("wrong@wrong.com");
+        String correctToken = authenticator.generateToken(TEST_EMAIL);
+        String incorrectToken = authenticator.generateToken("wrong@wrong.com");
         
         boolean validToken = false;
         validToken = authenticator.authenticateToken(correctToken, TEST_EMAIL);
@@ -48,7 +48,7 @@ public class TestJwtAuthenticator {
     public void testAuthenticateTokenWithExpiration() throws InterruptedException {
         Date expDate = new Date();
         expDate.setTime(expDate.getTime() + 500L);
-        String expiredToken = authenticator.getToken(TEST_EMAIL, expDate);
+        String expiredToken = authenticator.generateToken(TEST_EMAIL, expDate);
         
         if (LOG.isDebugEnabled())
             LOG.debug("Sleeping thread for 500 ms");

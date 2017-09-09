@@ -16,8 +16,12 @@ import com.eqan.web.service.LocationSearch;
 public class LocationController {
     private static final Logger LOG = LoggerFactory.getLogger(LocationController.class);
 
-    @Autowired
     private LocationSearch locationSearch;
+    
+    @Autowired
+    public LocationController(LocationSearch locationSearch) {
+        this.locationSearch = locationSearch;
+    }
 
     @GetMapping("/locations")
     public List<Location> getLocations(@RequestParam String query) {

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.eqan.web.security.JwtAuthenticator;
+import com.eqan.web.security.JwtAuthenticationProvider;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -23,7 +23,7 @@ public class TestJwtAuthenticator {
     private static final String TEST_EMAIL = "test@email.com";
     
     @Autowired
-    JwtAuthenticator authenticator;
+    JwtAuthenticationProvider authenticator;
     
     @Test
     public void testGetToken() {

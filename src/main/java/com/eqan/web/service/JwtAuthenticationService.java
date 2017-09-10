@@ -5,19 +5,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eqan.web.security.JwtAuthenticator;
+import com.eqan.web.security.JwtAuthenticationProvider;
 
 @Service("jwtAuthenticationService")
 public class JwtAuthenticationService {
     
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationService.class);
     
-    private JwtAuthenticator authenticator;
+    private JwtAuthenticationProvider authenticator;
     @Autowired
-    public JwtAuthenticationService(JwtAuthenticator authenticator) {
+    public JwtAuthenticationService(JwtAuthenticationProvider authenticator) {
         this.authenticator = authenticator;
-        if (LOG.isDebugEnabled())
-            LOG.debug("Constructed JwtAuthenticationService");
+        if (LOG.isTraceEnabled())
+            LOG.trace("Constructed JwtAuthenticationService");
     }
     
     public boolean authenticateToken(String token, String email) {

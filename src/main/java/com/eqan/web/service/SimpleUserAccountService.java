@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.eqan.web.exceptions.NotAuthorizedException;
 import com.eqan.web.model.User;
 import com.eqan.web.repository.UserRepository;
 @Service("simpleUser")
@@ -59,26 +58,6 @@ public class SimpleUserAccountService implements UserAccountService {
             LOG.debug("Getting all users");
         }
         return userRepository.getUsers();
-    }
-
-    @Override
-    public User signIn(String email, String password) {
-        if(LOG.isDebugEnabled())
-            LOG.debug("Received signIn request for {}", email);
-        User dbUser = null;
-        try {
-            dbUser = getUserByEmail(email); 
-        } catch (EmptyResultDataAccessException e) {
-            if (LOG.isTraceEnabled())
-                LOG.trace(e.getMessage());
-            throw new NotAuthorizedException(String.format("User %s could not be authenticated", email));
-        }
-        
-
-        if (!checkPassword(password, dbUser.getPassword())) {
-            throw new NotAuthorizedException(String.format("User %s could not be authenticated", email));
-        }
-        return dbUser;
     }
 
     @Override

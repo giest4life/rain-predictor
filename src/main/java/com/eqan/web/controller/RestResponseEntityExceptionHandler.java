@@ -13,15 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.eqan.web.exceptions.NotAuthorizedException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -74,24 +71,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-        logException(ex);
-        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), headers, status, request);
-    }
-
-    @ExceptionHandler(value = { NotAuthorizedException.class })
-    protected ResponseEntity<Object> handleNotAuthorized(NotAuthorizedException ex, WebRequest request) {
-        logException(ex);
-        return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED,
-                request);
-
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleServletRequestBindingException(ServletRequestBindingException ex,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-        if (ex.getMessage().contains("Authorization")) {
-            return handleNotAuthorized(new NotAuthorizedException(), request);
-        }
         logException(ex);
         return handleExceptionInternal(ex, getErrorMap(ex.getMessage()), headers, status, request);
     }

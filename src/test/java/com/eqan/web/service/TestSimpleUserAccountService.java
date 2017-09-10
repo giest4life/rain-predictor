@@ -1,6 +1,9 @@
 package com.eqan.web.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eqan.utils.dao.PostgreSQL;
-import com.eqan.web.exceptions.NotAuthorizedException;
 import com.eqan.web.model.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -80,24 +82,6 @@ public class TestSimpleUserAccountService {
         assertEquals("Retrieved user emails must be the same", testUsers.get(0).getEmail(), user.getEmail());
         User user2 = userService.getUserById(user.getId());
         assertEquals("Retrieved users must have the same id", user, user2);
-    }
-
-    @Test
-    public void testSignIn() {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Testing signIn method");
-        User user = testUsers.get(0);
-        User testedUser = userService.signIn(user.getEmail(), user.getPassword());
-        assertEquals("Returned user must be the same", user.getEmail(), testedUser.getEmail());
-    }
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testSignInInvalidUser() {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Testing invalid user trying to sign in");
-        User user = testUsers.get(0);
-        user.setPassword("This is wrong");
-        userService.signIn(user.getEmail(), user.getPassword());
     }
 
     @Test

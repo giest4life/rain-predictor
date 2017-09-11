@@ -96,7 +96,7 @@ public class UserAccountControllerIT {
         assertNotNull("Response must contain authenticate token", responseMap.get("token"));
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void testAuthenticateWithBadPassword() throws JsonProcessingException {
         User user = dbUtils.getTestUsers().get(0);
         user.setPassword("wrong password");
@@ -105,16 +105,18 @@ public class UserAccountControllerIT {
             sendJsonPostRequest(jsonUser, Object.class, AUTHENTICATE_USER);
         } catch (HttpClientErrorException e) {
             assertEquals("The Status code must be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+            throw e;
         }
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void testAuthenticateWithNonExistentUser() throws JsonProcessingException {
         String jsonUser = MAPPER.writeValueAsString(testUser);
         try {
             sendJsonPostRequest(jsonUser, Object.class, AUTHENTICATE_USER);
         } catch (HttpClientErrorException e) {
             assertEquals("The Status code must be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+            throw e;
         }
     }
 
@@ -136,7 +138,7 @@ public class UserAccountControllerIT {
         assertNull("Password must not be returned", response.getBody().getPassword());
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void testGetUserWithMalformedAuthorization() {
         URI uri = UriComponentsBuilder.fromUriString(URL).queryParam("email", "giest4life@gmail.com")
                 .buildAndExpand(GET_USER).toUri();
@@ -149,10 +151,11 @@ public class UserAccountControllerIT {
             restTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
         } catch (HttpClientErrorException e) {
             assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+            throw e;
         }
     }
     
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void testGetUserWithMissingAuthorization() {
         User user = dbUtils.getTestUsers().get(0);
         URI uri = UriComponentsBuilder.fromUriString(URL).queryParam("email", user.getEmail()).buildAndExpand(GET_USER)
@@ -161,10 +164,11 @@ public class UserAccountControllerIT {
             restTemplate.getForEntity(uri, User.class);
         } catch (HttpClientErrorException e) {
             assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+            throw e;
         }
     }
     
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void testGetUserWithWrongToken() {
         User user1 = dbUtils.getTestUsers().get(0);
         
@@ -182,6 +186,7 @@ public class UserAccountControllerIT {
             restTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
         } catch (HttpClientErrorException e) {
             assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+            throw e;
         }
     }
     

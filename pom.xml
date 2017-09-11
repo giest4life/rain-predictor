@@ -152,13 +152,6 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${resourcesDir}</directory>
-				<includes>
-					<include>app.properties</include>
-				</includes>
-				<filtering>true</filtering>
-			</testResource>
-			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>

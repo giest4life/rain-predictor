@@ -2,9 +2,11 @@ package com.eqan.web.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,17 +38,17 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
+@SuppressWarnings("unchecked")
 public class UserAccountControllerIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserAccountControllerIT.class);
     private static String URL = "http://localhost:8080/rain-predictor/users/{endpoint}";
     private static String REGISTER_USER = "register";
     private static String GET_USER = "user";
+    private static String AUTHENTICATE_USER = "authenticate";
     private static ObjectMapper MAPPER;
     private static SimpleModule MODULE;
-
-    private RestTemplate restTemplate = new RestTemplate();
-
+    
     @BeforeClass
     public static void setUpBeforeClass() {
 
@@ -55,6 +57,8 @@ public class UserAccountControllerIT {
         MODULE.addSerializer(User.class, new UserSerializer());
         MAPPER.registerModule(MODULE);
     }
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -65,15 +69,15 @@ public class UserAccountControllerIT {
 
     private User testUser = new User("jill@test.com", "password");
 
-    private ResponseEntity<User> sendJsonPostRequest(String jsonUser) {
+    private <T> ResponseEntity<T> sendJsonPostRequest(String jsonUser, Class<T> responseType, String endpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<String>(jsonUser, headers);
 
         if (LOG.isDebugEnabled())
-            LOG.debug("Sending user {} to {}{}", jsonUser, URL, REGISTER_USER);
+            LOG.debug("Sending user {} to {}{}", jsonUser, URL, endpoint);
 
-        return restTemplate.exchange(URL, HttpMethod.POST, entity, User.class, REGISTER_USER);
+        return restTemplate.exchange(URL, HttpMethod.POST, entity, responseType, endpoint);
     }
 
     @Before
@@ -84,32 +88,52 @@ public class UserAccountControllerIT {
     }
 
     @Test
-    public void testRegisterUser() throws JsonProcessingException {
-
-        // Need to use custom mapper as default Jackson will ignore password on
-        // serialization
-        String jsonUser = MAPPER.writeValueAsString(testUser);
-
-        ResponseEntity<User> response = sendJsonPostRequest(jsonUser);
-        assertEquals("HTTP Status must be 201", HttpStatus.CREATED, response.getStatusCode());
-
-        User responseUser = response.getBody();
-
-        assertNotNull("The response user must not be null", responseUser);
-        assertEquals("The response user must have same email", testUser.getEmail(), responseUser.getEmail());
-
+    public void testAuthenticateUserWithCorrectCredentials() throws JsonProcessingException {
+        User user = dbUtils.getTestUsers().get(0);
+        String jsonUser = MAPPER.writeValueAsString(user);
+        ResponseEntity<Object> response = sendJsonPostRequest(jsonUser, Object.class, AUTHENTICATE_USER);
+        Map<String, String> responseMap = (Map<String, String>) response.getBody();
+        assertNotNull("Response must contain authenticate token", responseMap.get("token"));
     }
 
     @Test
-    public void testGetUserWithMissingAuthorization() {
+    public void testAuthenticateWithBadPassword() throws JsonProcessingException {
         User user = dbUtils.getTestUsers().get(0);
+        user.setPassword("wrong password");
+        String jsonUser = MAPPER.writeValueAsString(user);
+        try {
+            sendJsonPostRequest(jsonUser, Object.class, AUTHENTICATE_USER);
+        } catch (HttpClientErrorException e) {
+            assertEquals("The Status code must be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testAuthenticateWithNonExistentUser() throws JsonProcessingException {
+        String jsonUser = MAPPER.writeValueAsString(testUser);
+        try {
+            sendJsonPostRequest(jsonUser, Object.class, AUTHENTICATE_USER);
+        } catch (HttpClientErrorException e) {
+            assertEquals("The Status code must be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
+    }
+
+    @Test
+    public void testGetUserWithAuthorization() throws JsonProcessingException {
+        User user = dbUtils.getTestUsers().get(0);
+        String token = authService.generateToken(user.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
         URI uri = UriComponentsBuilder.fromUriString(URL).queryParam("email", user.getEmail()).buildAndExpand(GET_USER)
                 .toUri();
-        try {
-            restTemplate.getForEntity(uri, User.class);
-        } catch (HttpClientErrorException e) {
-            assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
-        }
+
+        ResponseEntity<User> response = restTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
+
+        assertEquals("Returned email must match", user.getEmail(), response.getBody().getEmail());
+        assertNull("Password must not be returned", response.getBody().getPassword());
     }
 
     @Test
@@ -127,7 +151,19 @@ public class UserAccountControllerIT {
             assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
         }
     }
-
+    
+    @Test
+    public void testGetUserWithMissingAuthorization() {
+        User user = dbUtils.getTestUsers().get(0);
+        URI uri = UriComponentsBuilder.fromUriString(URL).queryParam("email", user.getEmail()).buildAndExpand(GET_USER)
+                .toUri();
+        try {
+            restTemplate.getForEntity(uri, User.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
+    }
+    
     @Test
     public void testGetUserWithWrongToken() {
         User user1 = dbUtils.getTestUsers().get(0);
@@ -148,23 +184,21 @@ public class UserAccountControllerIT {
             assertEquals("Response code should be 401", HttpStatus.UNAUTHORIZED, e.getStatusCode());
         }
     }
-
+    
     @Test
-    public void testGetUserWithAuthorization() throws JsonProcessingException {
-        User user = dbUtils.getTestUsers().get(0);
-        String token = authService.generateToken(user.getEmail());
+    public void testRegisterUser() throws JsonProcessingException {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        // Need to use custom mapper as default Jackson will ignore password on
+        // serialization
+        String jsonUser = MAPPER.writeValueAsString(testUser);
 
-        URI uri = UriComponentsBuilder.fromUriString(URL).queryParam("email", user.getEmail()).buildAndExpand(GET_USER)
-                .toUri();
+        ResponseEntity<User> response = sendJsonPostRequest(jsonUser, User.class, REGISTER_USER);
+        assertEquals("HTTP Status must be 201", HttpStatus.CREATED, response.getStatusCode());
 
-        ResponseEntity<User> response = restTemplate.exchange(uri, HttpMethod.GET, entity, User.class);
+        User responseUser = response.getBody();
 
-        assertEquals("Returned email must match", user.getEmail(), response.getBody().getEmail());
-        assertEquals("Password must not be returned", null, response.getBody().getPassword());
+        assertNotNull("The response user must not be null", responseUser);
+        assertEquals("The response user must have same email", testUser.getEmail(), responseUser.getEmail());
 
     }
 

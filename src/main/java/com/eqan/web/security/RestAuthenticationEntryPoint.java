@@ -19,6 +19,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         // without supplying any credentials
         // We should just send a 401 Unauthorized response because there is no
         // 'login page' to redirect to
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

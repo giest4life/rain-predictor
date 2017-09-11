@@ -40,7 +40,7 @@
 	
 	<!-- Spring Security Setup -->
 	<security:http pattern="/users/register" security="none" />
-	<security:http pattern="/authenticate" security="none" />
+	<security:http pattern="/users/authenticate" security="none" />
 	
 	<security:http pattern="/users/**" entry-point-ref="restAuthenticationEntryPoint" create-session="stateless">
 		<security:csrf disabled="true" />

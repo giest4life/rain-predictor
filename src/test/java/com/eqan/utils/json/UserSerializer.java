@@ -9,13 +9,10 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class UserSerializer extends StdSerializer<User> {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8295448136451057720L;
 
     public UserSerializer() {
-        this(null);
+        this(User.class);
     }
     public UserSerializer(Class<User> t) {
         super(t);

@@ -10,7 +10,7 @@ This application loads its configuration from a tokenized file `app.properties`.
   * `dev` which is active by default
   * `prod` which can be selected using the `-P` flag when providing maven commands; e.g. `mvn clean package -P prod`
 
-The properties files inside the `config` folder are chcked into source control and it is not recommended to store any sensitive properties such as database passwords and API keys. These properties can be defined in files in the `private` folder, directly inside the `config` folder. The file names in the `config/private` folder should have the same format as non-private properties files
+The properties files inside the `config` folder are checked into source control and it is not recommended to store any sensitive properties such as database passwords and API keys. These properties can be defined in files in the `private` folder, directly inside the `config` folder. The file names in the `config/private` folder should have the same format as non-private properties files
 
 ## Testing
 TBD

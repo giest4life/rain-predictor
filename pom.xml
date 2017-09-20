@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.eqan</groupId>
 	<artifactId>rain-predictor</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -191,6 +191,14 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+                <configuration>
+                    <server>${env}-tomcat</server>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

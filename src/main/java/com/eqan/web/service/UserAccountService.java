@@ -5,14 +5,13 @@ import java.util.List;
 import com.eqan.web.model.User;
 
 public interface UserAccountService {
-    public List<User> getUsers();
-    public User getUserById(long id);
-    public User getUserByEmail(String email);
-    public User createUser(User user);
-    public User updateUser(User user);
-    public void deleteUser(String email);
-    public void deleteUser(long id);
-    
-    public boolean validate(String email, String password);
+     List<User> getUsers();
+     User getUserById(long id);
+     User getUserByEmail(String email);
+     User createUser(User user);
+     User updateUser(User user);
+     void deleteUser(String email);
+     void deleteUser(long id);
+     boolean validate(String email, String password);
     
 }

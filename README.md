@@ -30,7 +30,6 @@ The server details should be defined in your `settings.xml` file and must not be
     </server>
     ...
 ```
-<<<<<<< HEAD
 The maven integration plugin uses the `<role rolename="manager-script"/>`. So, please be sure to add the `manager-script` role to your user in Tomcat's `tomcat-users.xml`.
 
 For more information on maven integration with Tomcat please read the [plugin's documentation](http://tomcat.apache.org/maven-plugin-2.2/tomcat7-maven-plugin/)

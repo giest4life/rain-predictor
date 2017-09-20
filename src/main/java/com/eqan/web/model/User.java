@@ -1,11 +1,14 @@
 package com.eqan.web.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 public class User {
     private long id;
     private String email;
+    private List<Location> locations;
 
     @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
@@ -14,6 +17,7 @@ public class User {
     public User() {
         
     }
+    
     public User(String email, String password) {
         this.email = email;
         this.password = password;
@@ -48,7 +52,14 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
+    public List<Location> getLocations() {
+        return locations;
+    }
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+    
     @Override
     public String toString() {
         return "User [id=" + id + ", email=" + email + "]";

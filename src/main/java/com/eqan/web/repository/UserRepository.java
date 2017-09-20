@@ -3,6 +3,7 @@ package com.eqan.web.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,18 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.eqan.utils.dao.UserRowMapper;
+import com.eqan.web.model.Location;
 import com.eqan.web.model.User;
 
 @Repository("userRepository")
 public class UserRepository {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    public UserRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public User createUser(User user) {
         // jdbcTemplate.update("insert into app_user(email, password)
@@ -78,6 +84,10 @@ public class UserRepository {
 
     public void deleteUser(long id) {
         jdbcTemplate.update("DELETE FROM app_user WHERE user_id = ?", id);
-        
     }
+    
+    public void saveLocations(User user) {
+        List<Object[]> pairs = new ArrayList<>();
+    }
+    
 }

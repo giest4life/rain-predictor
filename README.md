@@ -17,7 +17,6 @@ TBD
 ## Deployment
 ### Deployment Using Maven and Tomcat 7/8
 This is the simplest way to deploy this application is to use maven integration with Tomcat 7/8 via the `tomcat7-maven-plugin`.
-<<<<<<< HEAD
 `mvn tomcat7:redeploy` will deploy the WAR file to the server with id `dev-tomcat`--the id of the server is simply `${env}-tomcat`. 
 
 The server details should be defined in your `settings.xml` file and must not be exposed via source control. Here is an example of a simple server configuration:

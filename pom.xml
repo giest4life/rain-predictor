@@ -97,6 +97,7 @@
 	</profiles>
 
 	<build>
+        <finalName>${artifactId}</finalName>
 		<resources>
 			<resource>
 				<directory>${resourcesDir}</directory>

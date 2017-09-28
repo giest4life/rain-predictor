@@ -21,3 +21,6 @@ app.log
 
 #Lucene Indicies
 indices/
+
+#Deploy script
+deploy.sh

@@ -2,6 +2,7 @@ package com.eqan.web.controller;
 
 import static org.junit.Assert.assertTrue;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,8 +17,8 @@ import com.eqan.web.model.Location;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
+@Slf4j
 public class LocationControllerIT {
-    private static final Logger LOG = LoggerFactory.getLogger(LocationControllerIT.class);
     private static String URL = "http://localhost:8080/rain-predictor/locations";
     
     RestTemplate restTemplate = new RestTemplate();
@@ -26,9 +27,9 @@ public class LocationControllerIT {
         String queryString = "Sterling";
         UriComponentsBuilder uriBuilder =  UriComponentsBuilder.fromUriString(URL);
         uriBuilder.queryParam("query", queryString);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Sending request to {}", uriBuilder.toUriString());
-        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.toUriString(), Location[].class);
+        if (log.isDebugEnabled())
+            log.debug("Sending request to {}", uriBuilder.toUriString());
+        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.build().toUri(), Location[].class);
         Location[] locations = result.getBody();
         assertTrue("Locations must not be empty", locations.length > 0);
         
@@ -40,9 +41,9 @@ public class LocationControllerIT {
         UriComponentsBuilder uriBuilder =  UriComponentsBuilder.fromUriString(URL);
         uriBuilder.queryParam("query", queryString);
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("Sending request to {}", uriBuilder.toUriString());
-        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.toUriString(), Location[].class);
+        if (log.isDebugEnabled())
+            log.debug("Sending request to {}", uriBuilder.toUriString());
+        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.build().toUri(),Location[].class);
         Location[] locations = result.getBody();
         assertTrue("Locations must not be empty", locations.length > 0);
     }
@@ -53,9 +54,9 @@ public class LocationControllerIT {
         UriComponentsBuilder uriBuilder =  UriComponentsBuilder.fromUriString(URL);
         uriBuilder.queryParam("query", queryString);
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("Sending request to {}", uriBuilder.toUriString());
-        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.toUriString(), Location[].class);
+        if (log.isDebugEnabled())
+            log.debug("Sending request to {}", uriBuilder.toUriString());
+        HttpEntity<Location[]> result = restTemplate.getForEntity(uriBuilder.build().toUri(), Location[].class);
         Location[] locations = result.getBody();
         assertTrue("Locations must not be empty", locations.length > 0);
     }

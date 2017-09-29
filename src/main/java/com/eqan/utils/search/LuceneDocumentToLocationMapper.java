@@ -1,16 +1,18 @@
 package com.eqan.utils.search;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eqan.web.model.Location;
 
+@Slf4j
 public class LuceneDocumentToLocationMapper {
-    private static final Logger LOG = LoggerFactory.getLogger(LuceneDocumentToLocationMapper.class);
+
     public static Location mapDoc(Document doc) {
-        if (LOG.isTraceEnabled())
-            LOG.trace("Geoname ID: {} ",doc.get("geoname_id"));
+        if (log.isTraceEnabled())
+            log.trace("Geoname ID: {} ", doc.get("geoname_id"));
         return Location.builder().geonameId(Long.parseLong(doc.get("geoname_id")))
                 .longitude(Double.parseDouble(doc.get("longitude")))
                 .latitude(Double.parseDouble(doc.get("latitude")))

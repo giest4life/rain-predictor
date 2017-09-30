@@ -26,7 +26,7 @@ import java.util.List;
 @Service("luceneIndexLocationSearch")
 @Slf4j
 public class LuceneIndexLocationSearch implements LocationSearch {
-    public static final int MAX_HITS = 10;
+    private static final int MAX_HITS = 10;
 
     private StandardAnalyzer analyzer = new StandardAnalyzer();
     private IndexReader reader;
@@ -42,25 +42,17 @@ public class LuceneIndexLocationSearch implements LocationSearch {
         List<Location> locations = new ArrayList<>();
 
         try {
-            IndexSearcher searcher = new IndexSearcher(reader);
             queryString = QueryParser.escape(queryString);
-            if (log.isTraceEnabled())
-                log.trace("Searching for query string: {}", queryString);
-            Query q = exactPhrase(queryString);
+            Query q = exactMatchOrAnyWord(queryString);
 
+            if (log.isDebugEnabled()) {
+                log.debug("Searching for query string: {}", queryString);
+                log.debug("Running query: {}", q.toString());
+            }
+
+            IndexSearcher searcher = new IndexSearcher(reader);
             TopDocs docs = searcher.search(q, MAX_HITS);
-            if (docs.scoreDocs.length == 0) {
-                if (log.isDebugEnabled())
-                    log.trace("Trying starts with query");
-                q = startsWith(queryString);
-                docs = searcher.search(q, MAX_HITS);
-            }
-            if (docs.scoreDocs.length == 0) {
-                if (log.isTraceEnabled())
-                    log.trace("Trying word query");
-                q = anyWord(queryString);
-                docs = searcher.search(q, MAX_HITS);
-            }
+
             ScoreDoc[] hits = docs.scoreDocs;
             for (ScoreDoc scoreDoc : hits) {
                 Document doc = searcher.doc(scoreDoc.doc);
@@ -71,25 +63,17 @@ public class LuceneIndexLocationSearch implements LocationSearch {
             if (log.isTraceEnabled())
                 log.trace("Finished querying");
 
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (ParseException | IOException e) {
             throw new RuntimeException(e);
         }
 
         return locations;
     }
 
-    private Query exactPhrase(String queryString) throws ParseException {
-        return new QueryParser("long_name", analyzer).parse(String.format("\"%s\"", queryString));
-    }
-
-    private Query startsWith(String queryString) throws ParseException {
-        return new QueryParser("long_name", analyzer).parse(queryString + "*");
-    }
-
-    private Query anyWord(String queryString) throws ParseException {
-        return new QueryParser("long_name", analyzer).parse(queryString);
+    private Query exactMatchOrAnyWord(String queryString) throws ParseException {
+        String qs = String.join(" AND ", queryString.split(" ")) + "*";
+        return new QueryParser("long_name", analyzer)
+                .parse(String.format("\"%s\" OR %s", queryString, qs));
     }
 
 }

@@ -24,3 +24,6 @@ indices/
 
 #Deploy script
 deploy.sh
+
+#Data Directory
+data/

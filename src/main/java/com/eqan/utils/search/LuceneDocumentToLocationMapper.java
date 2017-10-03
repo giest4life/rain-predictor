@@ -12,8 +12,8 @@ public class LuceneDocumentToLocationMapper {
 
     public static Location mapDoc(Document doc) {
         if (log.isTraceEnabled())
-            log.trace("Geoname ID: {} ", doc.get("geoname_id"));
-        return Location.builder().geonameId(Long.parseLong(doc.get("geoname_id")))
+            log.trace("Geoname ID: {} ", doc.get("geonameid"));
+        return Location.builder().geonameId(Long.parseLong(doc.get("geonameid")))
                 .longitude(Double.parseDouble(doc.get("longitude")))
                 .latitude(Double.parseDouble(doc.get("latitude")))
                 .locationName(doc.get("location_name"))

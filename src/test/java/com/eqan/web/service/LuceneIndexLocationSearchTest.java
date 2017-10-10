@@ -35,8 +35,6 @@ public class LuceneIndexLocationSearchTest {
 
         locations = locationSearch.search("San Franci");
         for (Location location : locations) {
-            log.debug("{}, {}, {}", location.getLocationName(),
-                    location.getAdmin1Name(), location.getCountryCode());
         }
 
     }
